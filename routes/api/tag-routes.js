@@ -50,7 +50,28 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
   // update a tag's name by its `id` value
+  try {
+    const updatedTagData = await ProductTag.update(
+      {
+        // Assuming you want to update the `tag_id` field, change this to the desired field.
+        tag_id: req.body.tag_id,
+      },
+      {
+        where: {
+          id: req.params.id,
+        },
+      }
+    );
 
+    if (updatedTagData[0] === 0) {
+      res.status(404).json({ message: 'No Product Tag found with that id!' });
+      return;
+    }
+
+    res.status(200).json({ message: 'Tag updated successfully' });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 router.delete('/:id', (req, res) => {
